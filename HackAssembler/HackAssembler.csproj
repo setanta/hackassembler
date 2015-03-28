@@ -42,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bits.cs" />
     <Compile Include="Code.cs" />
     <Compile Include="Compiler.cs" />
     <Compile Include="Parser.cs" />
