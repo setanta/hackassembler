@@ -148,23 +148,5 @@ namespace HackAssembler
             }
             return lines.ToArray();
         }
-
-        private static Stream getFileStream(string filePath, string resourceNamespace)
-        {
-            if (resourceNamespace == null)
-            {
-                try
-                {
-                    return new FileStream(filePath, FileMode.Open);
-                }
-                catch (System.Exception)
-                {
-                    return null;
-                }
-            }
-            string pseudoName = filePath.Replace('\\', '.');
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            return assembly.GetManifestResourceStream(resourceNamespace + "." + pseudoName);
-        }
     }
 }
