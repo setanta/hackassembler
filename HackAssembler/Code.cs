@@ -96,73 +96,94 @@ namespace HackAssembler
         //        D|A   0  1  0  1  0  1    D|M
         public static byte[] Comp(string mnemonic)
         {
+            byte[] code = null;
             switch (mnemonic)
             {
                 case "0":
-                    return new byte[] { 1, 0, 1, 0, 1, 0 };
+                    code = new byte[] { 0, 1, 0, 1, 0, 1, 0 };
+                    break;
 
                 case "1":
-                    return new byte[] { 1, 1, 1, 1, 1, 1 };
+                    code = new byte[] { 0, 1, 1, 1, 1, 1, 1 };
+                    break;
 
                 case "-1":
-                    return new byte[] { 1, 1, 1, 0, 1, 0 };
+                    code = new byte[] { 0, 1, 1, 1, 0, 1, 0 };
+                    break;
 
                 case "D":
-                    return new byte[] { 0, 0, 1, 1, 0, 0 };
+                    code = new byte[] { 0, 0, 0, 1, 1, 0, 0 };
+                    break;
 
                 case "A":
                 case "M":
-                    return new byte[] { 1, 1, 0, 0, 0, 0 };
+                    code = new byte[] { 0, 1, 1, 0, 0, 0, 0 };
+                    break;
 
                 case "!D":
-                    return new byte[] { 0, 0, 1, 1, 0, 1 };
+                    code = new byte[] { 0, 0, 0, 1, 1, 0, 1 };
+                    break;
 
                 case "!A":
                 case "!M":
-                    return new byte[] { 1, 1, 0, 0, 0, 1 };
+                    code = new byte[] { 0, 1, 1, 0, 0, 0, 1 };
+                    break;
 
                 case "-D":
-                    return new byte[] { 0, 0, 1, 1, 1, 1 };
+                    code = new byte[] { 0, 0, 0, 1, 1, 1, 1 };
+                    break;
 
                 case "-A":
                 case "-M":
-                    return new byte[] { 1, 1, 0, 0, 1, 1 };
+                    code = new byte[] { 0, 1, 1, 0, 0, 1, 1 };
+                    break;
 
                 case "D+1":
-                    return new byte[] { 0, 1, 1, 1, 1, 1 };
+                    code = new byte[] { 0, 0, 1, 1, 1, 1, 1 };
+                    break;
 
                 case "A+1":
                 case "M+1":
-                    return new byte[] { 1, 1, 0, 1, 1, 1 };
+                    code = new byte[] { 0, 1, 1, 0, 1, 1, 1 };
+                    break;
 
                 case "D-1":
-                    return new byte[] { 0, 0, 1, 1, 1, 0 };
+                    code = new byte[] { 0, 0, 0, 1, 1, 1, 0 };
+                    break;
 
                 case "A-1":
                 case "M-1":
-                    return new byte[] { 1, 1, 0, 0, 1, 0 };
+                    code = new byte[] { 0, 1, 1, 0, 0, 1, 0 };
+                    break;
 
                 case "D+A":
                 case "D+M":
-                    return new byte[] { 0, 0, 0, 0, 1, 0 };
+                    code = new byte[] { 0, 0, 0, 0, 0, 1, 0 };
+                    break;
 
                 case "D-A":
                 case "D-M":
-                    return new byte[] { 0, 1, 0, 0, 1, 1 };
+                    code = new byte[] { 0, 0, 1, 0, 0, 1, 1 };
+                    break;
 
                 case "A-D":
                 case "M-D":
-                    return new byte[] { 0, 0, 0, 1, 1, 1 };
+                    code = new byte[] { 0, 0, 0, 0, 1, 1, 1 };
+                    break;
 
                 case "D&A":
                 case "D&M":
-                    return new byte[] { 0, 0, 0, 0, 0, 0 };
+                    code = new byte[] { 0, 0, 0, 0, 0, 0, 0 };
+                    break;
 
                 case "D|A":
                 case "D|M":
-                    return new byte[] { 0, 1, 0, 1, 0, 1 };
+                    code = new byte[] { 0, 0, 1, 0, 1, 0, 1 };
+                    break;
             }
-            return new byte[7];
+            if (mnemonic.Contains("M"))
+                code[0] = 1;
+            return code;
         }
 
         public static string BitArrayToString(byte[] bitArray)

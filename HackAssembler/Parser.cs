@@ -21,11 +21,11 @@ namespace HackAssembler
             L_COMMAND  // Pseucocommand for "(Xxx)" (L-instruction)
         }
 
-        public Parser(string sourceFile, string resourceNamespace = null)
+        public Parser(string sourceFile)
         {
             SourceFile = sourceFile;
-            sourceLines = getSourceFile(sourceFile, resourceNamespace);
             currentLine = -1;
+            sourceLines = getSourceFile(sourceFile);
         }
 
         public string SourceFile { get; private set; }
@@ -122,10 +122,13 @@ namespace HackAssembler
             }
         }
 
-        private string[] getSourceFile(string sourceFile, string resourceNamespace)
+        private string[] getSourceFile(string sourceFile)
         {
+            if (!File.Exists(sourceFile))
+                return new string[0];
+
             List<string> lines = new List<string>();
-            using (var reader = new StreamReader(getFileStream(sourceFile, resourceNamespace)))
+            using (var reader = new StreamReader(new FileStream(sourceFile, FileMode.Open)))
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
