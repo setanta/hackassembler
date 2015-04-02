@@ -1,37 +1,20 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
+﻿using NUnit.Framework;
 
 namespace HackAssemblerTests
 {
-    [TestClass]
-    [DeploymentItem(@"..\..\HackSamples\Sources", "Sources")]
-    [DeploymentItem(@"..\..\HackSamples\Binaries", "Binaries")]
+    [TestFixture]
     public class SymbolLessAssemblerTest
     {
-        [TestMethod]
-        public void SymbolLessAssemblerConstructorTest()
-        {
-            Assert.IsTrue(File.Exists(@"Sources\Add.asm"));
-            Assert.IsTrue(File.Exists(@"Sources\MaxL.asm"));
-            Assert.IsTrue(File.Exists(@"Sources\PongL.asm"));
-            Assert.IsTrue(File.Exists(@"Sources\RectL.asm"));
-
-            Assert.IsTrue(File.Exists(@"Binaries\Add.hack"));
-            Assert.IsTrue(File.Exists(@"Binaries\MaxL.hack"));
-            Assert.IsTrue(File.Exists(@"Binaries\PongL.hack"));
-            Assert.IsTrue(File.Exists(@"Binaries\RectL.hack"));
-        }
-
-        [TestMethod]
+        [Test]
         public void Add() { Utils.CompileAndCompare(); }
 
-        [TestMethod]
+        [Test]
         public void MaxL() { Utils.CompileAndCompare(); }
 
-        [TestMethod]
+        [Test]
         public void PongL() { Utils.CompileAndCompare(); }
 
-        [TestMethod]
+        [Test]
         public void RectL() { Utils.CompileAndCompare(); }
     }
 }

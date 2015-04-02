@@ -36,6 +36,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <Choose>
@@ -44,11 +47,7 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\Resources.Designer.cs">
@@ -68,26 +67,55 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="HackSamples\Sources\Add.asm" />
-    <EmbeddedResource Include="HackSamples\Sources\Max.asm" />
-    <EmbeddedResource Include="HackSamples\Sources\MaxL.asm" />
-    <EmbeddedResource Include="HackSamples\Sources\Pong.asm" />
-    <EmbeddedResource Include="HackSamples\Sources\PongL.asm" />
-    <EmbeddedResource Include="HackSamples\Sources\Rect.asm" />
-    <EmbeddedResource Include="HackSamples\Sources\RectL.asm" />
+    <EmbeddedResource Include="HackSamples\Sources\Add.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HackSamples\Sources\Max.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HackSamples\Sources\MaxL.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HackSamples\Sources\Pong.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HackSamples\Sources\PongL.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HackSamples\Sources\Rect.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HackSamples\Sources\RectL.asm">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="HackSamples\Binaries\Add.hack" />
-    <None Include="HackSamples\Binaries\Max.hack" />
-    <None Include="HackSamples\Binaries\MaxL.hack" />
-    <None Include="HackSamples\Binaries\Pong.hack" />
-    <None Include="HackSamples\Binaries\PongL.hack" />
-    <None Include="HackSamples\Binaries\Rect.hack" />
-    <None Include="HackSamples\Binaries\RectL.hack" />
+    <None Include="HackSamples\Binaries\Add.hack">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="HackSamples\Binaries\Max.hack">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="HackSamples\Binaries\MaxL.hack">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="HackSamples\Binaries\Pong.hack">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="HackSamples\Binaries\PongL.hack">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="HackSamples\Binaries\Rect.hack">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="HackSamples\Binaries\RectL.hack">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
