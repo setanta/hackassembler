@@ -7,21 +7,33 @@ namespace HackAssembler
     {
         private Parser parser;
 
-        //private SymbolTable symbolTable;
+        private SymbolTable symbolTable;
 
         public List<string> HackCode { get; private set; }
 
         public Assembler(string sourcePath)
         {
             HackCode = new List<string>();
+            symbolTable = new SymbolTable();
             parser = new Parser(sourcePath);
-            //symbolTable = new SymbolTable();
         }
 
         public void Run()
         {
-            HackCode.Clear();
+            // First Pass: fill symbol table.
+            int memoryAddress = 0;
+            while (parser.HasMoreCommands)
+            {
+                parser.Advance();
+                if (parser.CurrentCommandType == Parser.CommandType.L_COMMAND)
+                    symbolTable.AddEntry(parser.Symbol, memoryAddress);
+                else
+                    memoryAddress++;
+            }
 
+            // Second Pass: generate code.
+            parser.Reset();
+            HackCode.Clear();
             while (parser.HasMoreCommands)
             {
                 parser.Advance();
@@ -41,7 +53,14 @@ namespace HackAssembler
                     case Parser.CommandType.A_COMMAND:
                         //           +----value (v = 0 or 1)-----+
                         // Binary: 0 v v v v v v v v v v v v v v v
-                        int address = Convert.ToInt16(parser.Symbol);
+                        int address;
+                        bool isNumeric = int.TryParse(parser.Symbol, out address);
+                        if (!isNumeric)
+                        {
+                            if (!symbolTable.Contains(parser.Symbol))
+                                symbolTable.AddEntry(parser.Symbol);
+                            address = symbolTable.GetAddress(parser.Symbol);
+                        }
                         HackCode.Add("0" + Convert.ToString(address, 2).PadLeft(15, '0'));
                         break;
                 }

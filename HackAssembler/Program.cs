@@ -23,7 +23,7 @@ namespace HackAssembler
             var assembler = new Assembler(args[0]);
             assembler.Run();
             if (args.Length == 1)
-                Console.WriteLine(assembler.HackCode);
+                Console.WriteLine(string.Join("\n", assembler.HackCode.ToArray()));
             else if (args.Length == 2 && assembler.Save(args[1]))
                 Console.WriteLine(string.Format("Built {0} into {1}", args[0], args[1]));
             Console.ReadKey();

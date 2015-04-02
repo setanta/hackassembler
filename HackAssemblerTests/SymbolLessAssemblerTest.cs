@@ -1,7 +1,5 @@
-﻿using HackAssembler;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
-using System.Runtime.CompilerServices;
 
 namespace HackAssemblerTests
 {
@@ -11,7 +9,7 @@ namespace HackAssemblerTests
     public class SymbolLessAssemblerTest
     {
         [TestMethod]
-        public void ConstructorTest()
+        public void SymbolLessAssemblerConstructorTest()
         {
             Assert.IsTrue(File.Exists(@"Sources\Add.asm"));
             Assert.IsTrue(File.Exists(@"Sources\MaxL.asm"));
@@ -25,24 +23,15 @@ namespace HackAssemblerTests
         }
 
         [TestMethod]
-        public void Add() { compileAndCompare(); }
+        public void Add() { Utils.CompileAndCompare(); }
 
         [TestMethod]
-        public void MaxL() { compileAndCompare(); }
+        public void MaxL() { Utils.CompileAndCompare(); }
 
         [TestMethod]
-        public void PongL() { compileAndCompare(); }
+        public void PongL() { Utils.CompileAndCompare(); }
 
         [TestMethod]
-        public void RectL() { compileAndCompare(); }
-
-        private static void compileAndCompare([CallerMemberName] string prog = "")
-        {
-            var assembler = new Assembler(@"Sources\" + prog + ".asm");
-            assembler.Run();
-            var expected = File.ReadAllLines(@"Binaries\" + prog + ".hack");
-            for (int i = 0; i < assembler.HackCode.Count; i++)
-                Assert.AreEqual(expected[i], assembler.HackCode[i]);
-        }
+        public void RectL() { Utils.CompileAndCompare(); }
     }
 }

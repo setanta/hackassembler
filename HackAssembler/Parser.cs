@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 
 namespace HackAssembler
 {
@@ -16,15 +15,16 @@ namespace HackAssembler
         // TODO: Add and UNKNOWN_COMMAND for errors?
         public enum CommandType
         {
-            A_COMMAND, // Addressing instruction for "@Xxx" (A-instruction)
-            C_COMMAND, // Compute instruction for "dest=comp;jump" (C-instruction)
-            L_COMMAND  // Pseucocommand for "(Xxx)" (L-instruction)
+            UNKNOWN_COMMAND,
+            A_COMMAND,          // Addressing instruction for "@Xxx" (A-instruction)
+            C_COMMAND,          // Compute instruction for "dest=comp;jump" (C-instruction)
+            L_COMMAND           // Pseucocommand for "(Xxx)" (L-instruction)
         }
 
         public Parser(string sourceFile)
         {
             SourceFile = sourceFile;
-            currentLine = -1;
+            Reset();
             sourceLines = getSourceFile(sourceFile);
         }
 
@@ -50,6 +50,7 @@ namespace HackAssembler
         }
 
         // Returns the type of the current command:
+        // * UNKNOWN_COMMAND for malformed lines
         // * A_COMMAND for @Xxx where Xxx is either a symbol or a decimal number
         // * C_COMMAND for dest=comp;jump
         // * L_COMMAND (actually, pseudocommand) for (Xxx) where Xxx is a symbol.
@@ -120,6 +121,16 @@ namespace HackAssembler
 
                 Comp = line;
             }
+        }
+
+        // Restarts pointer to source code lines.
+        public void Reset()
+        {
+            currentLine = -1;
+            CurrentCommandType = CommandType.UNKNOWN_COMMAND;
+            Symbol = "";
+            Dest = "";
+            Jump = "";
         }
 
         private string[] getSourceFile(string sourceFile)
