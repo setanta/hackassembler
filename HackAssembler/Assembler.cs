@@ -25,10 +25,17 @@ namespace HackAssembler
             while (parser.HasMoreCommands)
             {
                 parser.Advance();
-                if (parser.CurrentCommandType == Parser.CommandType.L_COMMAND)
-                    symbolTable.AddEntry(parser.Symbol, memoryAddress);
-                else
-                    memoryAddress++;
+                switch (parser.CurrentCommandType)
+                {
+                    case Parser.CommandType.A_COMMAND:
+                    case Parser.CommandType.C_COMMAND:
+                        memoryAddress++;
+                        break;
+
+                    case Parser.CommandType.L_COMMAND:
+                        symbolTable.AddEntry(parser.Symbol, memoryAddress);
+                        break;
+                }
             }
 
             // Second Pass: generate code.

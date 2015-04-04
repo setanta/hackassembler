@@ -1,0 +1,3 @@
+﻿(INFINITE_LOOP)
+   @INFINITE_LOOP
+   0;jmp

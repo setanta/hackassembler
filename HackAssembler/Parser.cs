@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace HackAssembler
 {
@@ -12,7 +13,6 @@ namespace HackAssembler
         private string[] sourceLines;
         private int currentLine;
 
-        // TODO: Add and UNKNOWN_COMMAND for errors?
         public enum CommandType
         {
             UNKNOWN_COMMAND,
@@ -78,48 +78,63 @@ namespace HackAssembler
         public void Advance()
         {
             if (!HasMoreCommands)
-                throw new System.Exception("There ain't no more commands.");
+                throw new Exception("There ain't no more commands.");
 
-            currentLine++;
-            var line = sourceLines[currentLine];
+            string line;
+            while ((line = removeComment(sourceLines[++currentLine])) == "") { }
 
             Symbol = Dest = Comp = Jump = null;
-
-            // TODO: check if the symbols follow the construction rules.
 
             if (line.StartsWith("@"))
             {
                 CurrentCommandType = CommandType.A_COMMAND;
-                Symbol = line.Substring(1);
+                var address = line.Substring(1);
+                if (!isValidSymbol(address) && !isValidConstant(address))
+                    throw new InvalidSymbolException(address, SourceFile, currentLine + 1);
+                Symbol = address;
             }
             else if (line.StartsWith("(") && line.EndsWith(")"))
             {
                 CurrentCommandType = CommandType.L_COMMAND;
-                Symbol = line.Substring(1, line.Length - 2);
+                var label = line.Substring(1, line.Length - 2).Trim();
+                if (!isValidSymbol(label))
+                    throw new InvalidSymbolException(label, SourceFile, currentLine + 1);
+                Symbol = label;
             }
             else
             {
+                // DEST=COMP;JUMP
                 CurrentCommandType = CommandType.C_COMMAND;
 
-                // TODO: check if the commands are valid.
-
-                // dest=...
+                // DEST=comp;jump
                 var cmdParts = line.Split(new Char[] { '=' });
                 if (cmdParts.Length == 2)
                 {
+                    if (!isValidDest(cmdParts[0]))
+                        throw new InvalidCommandException(sourceLines[currentLine], SourceFile, currentLine + 1);
                     Dest = cmdParts[0];
                     line = cmdParts[1];
                 }
 
-                // ...;jump
+                // dest=comp;JUMP
                 cmdParts = line.Split(new Char[] { ';' });
                 if (cmdParts.Length == 2)
                 {
+                    if (!isValidJump(cmdParts[1]))
+                        throw new InvalidCommandException(sourceLines[currentLine], SourceFile, currentLine + 1);
                     Jump = cmdParts[1];
                     line = cmdParts[0];
                 }
 
-                Comp = line;
+                if (isValidCommand(line))
+                {
+                    Comp = line;
+                }
+                else
+                {
+                    Dest = Jump = null;
+                    throw new InvalidCommandException(sourceLines[currentLine], SourceFile, currentLine + 1);
+                }
             }
         }
 
@@ -128,12 +143,72 @@ namespace HackAssembler
         {
             currentLine = -1;
             CurrentCommandType = CommandType.UNKNOWN_COMMAND;
-            Symbol = "";
-            Dest = "";
-            Jump = "";
+            Symbol = Dest = Comp = Jump = null;
         }
 
-        private string[] getSourceFile(string sourceFile)
+        // A user-defined symbol can be any sequence of letters, digits, underscore (_),
+        // dot (.), dollar sign ($), and colon (:) that does not begin with a digit.
+        private static bool isValidSymbol(string symbol)
+        {
+            return Regex.IsMatch(symbol, @"^[a-zA-Z_.$:][\w.$:]*$");
+        }
+
+        // Constants must be non-negative and are written in decimal notation.
+        private static bool isValidConstant(string constant)
+        {
+            return Regex.IsMatch(constant, @"^\d+$");
+        }
+
+        // Valid Commands:
+        // 0, 1, -1, D, A, M, !D, !A, !M, -D, -A, -M
+        // D+1, A+1, M+1, D-1, A-1, M-1, D+A, D+M, D-A, D-M
+        // A-D, M-D, D&A, D&M, D|A, D|M
+        private static bool isValidCommand(string command)
+        {
+            return Regex.IsMatch(command, @"^(0|[-]?1|[-!]?[DAM]|[DAM][+-]1|D[+\-\&\|][AM]|[AM]-D)$");
+        }
+
+        private static bool isValidDest(string dest)
+        {
+            switch (dest)
+            {
+                case "M":
+                case "D":
+                case "MD":
+                case "A":
+                case "AM":
+                case "AD":
+                case "AMD":
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool isValidJump(string jump)
+        {
+            switch (jump)
+            {
+                case "JGT":
+                case "JEQ":
+                case "JGE":
+                case "JLT":
+                case "JNE":
+                case "JLE":
+                case "JMP":
+                    return true;
+            }
+            return false;
+        }
+
+        private static string removeComment(string line)
+        {
+            var pos = line.IndexOf("//");
+            if (pos > -1)
+                line = line.Substring(0, pos).Trim();
+            return line;
+        }
+
+        private static string[] getSourceFile(string sourceFile)
         {
             if (!File.Exists(sourceFile))
                 return new string[0];
@@ -143,19 +218,7 @@ namespace HackAssembler
             {
                 string line;
                 while ((line = reader.ReadLine()) != null)
-                {
-                    line = line.Trim();
-
-                    // TODO: keep the line counting for error messages?
-                    if (line.StartsWith("//") || line == "")
-                        continue;
-
-                    var pos = line.IndexOf("//");
-                    if (pos > -1)
-                        line = line.Substring(0, pos).Trim();
-
-                    lines.Add(line);
-                }
+                    lines.Add(line.Trim());
             }
             return lines.ToArray();
         }
